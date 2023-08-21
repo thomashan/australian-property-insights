@@ -1,0 +1,81 @@
+plugins {
+    id "com.github.erdi.webdriver-binaries" version "3.2"
+    id "application"
+}
+
+version project.VERSION
+
+apply plugin: "groovy"
+apply plugin: "java"
+apply plugin: "eclipse"
+apply plugin: "idea"
+apply plugin: "jacoco"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+sourceCompatibility = 1.17
+targetCompatibility = 1.9
+
+ext {
+    gebVersion = "7.0"
+    seleniumVersion = "4.11.0"
+    groovyBaseVersion = "4.0"
+    groovyVersion = "4.0.13"
+    junitVersion = "5.10.0"
+    spockVersion = "2.3"
+    jsoupVersion = "1.16.1"
+}
+
+dependencies {
+    implementation("org.apache.groovy:groovy-all:${groovyVersion}") {
+        exclude(group: "junit")
+    }
+    implementation "ru.yandex.qatools.ashot:ashot:1.5.4"
+
+    implementation "org.jsoup:jsoup:${jsoupVersion}"
+
+    implementation "org.gebish:geb-spock:${gebVersion}"
+    implementation "org.gebish:geb-core:${gebVersion}"
+    implementation "org.spockframework:spock-core:${spockVersion}-groovy-${groovyBaseVersion}"
+    implementation "org.seleniumhq.selenium:selenium-support:${seleniumVersion}"
+    implementation "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
+    implementation "org.seleniumhq.selenium:htmlunit-driver:2.49.1"
+
+    implementation "io.sgr:s2-geometry-library-java:1.0.1"
+    implementation "com.xlson.groovycsv:groovycsv:1.3"
+    implementation "com.google.maps:google-maps-services:0.18.0"
+    implementation "com.google.api-client:google-api-client:1.31.4"
+    implementation "com.dropbox.core:dropbox-core-sdk:4.0.0"
+
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+}
+
+webdriverBinaries {
+    configureTask(run)
+    chromedriver "114.0.5735.90"
+    geckodriver "0.33.0"
+}
+
+//jacocoTestReport {
+//    reports {
+//        xml.enabled = true // coveralls plugin depends on xml format report
+//        html.enabled = true
+//    }
+//}
+
+//jacoco {
+//    toolVersion = "0.8.2"
+//    reportsDir = file("$buildDir/customJacocoReportDir")
+//}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "failed"
+        exceptionFormat "full"
+    }
+}
