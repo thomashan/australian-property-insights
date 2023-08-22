@@ -1,0 +1,9 @@
+ext {
+    gebVersion = "7.0"
+    seleniumVersion = "4.11.0"
+    groovyBaseVersion = "4.0"
+    groovyVersion = "4.0.13"
+    junitVersion = "5.10.0"
+    spockVersion = "2.3"
+    jsoupVersion = "1.16.1"
+}

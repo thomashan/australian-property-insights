@@ -1,0 +1,36 @@
+subprojects {
+    apply plugin: "eclipse"
+    apply plugin: "idea"
+    apply plugin: "java"
+    apply plugin: "groovy"
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation("org.apache.groovy:groovy-all:${groovyVersion}") {
+            exclude(group: "junit")
+        }
+
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+        testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    }
+
+    test {
+        useJUnitPlatform()
+        testLogging {
+            events "failed"
+            exceptionFormat "full"
+        }
+    }
+}

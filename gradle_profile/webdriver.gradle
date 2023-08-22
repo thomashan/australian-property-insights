@@ -1,0 +1,8 @@
+apply plugin: "com.github.erdi.webdriver-binaries"
+
+webdriverBinaries {
+    configureTask(run)
+    chromedriver "114.0.5735.90"
+    geckodriver "0.33.0"
+    edgedriver "110.0.1587.57"
+}
