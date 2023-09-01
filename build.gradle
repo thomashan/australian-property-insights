@@ -1,23 +1,8 @@
 plugins {
     id "com.github.erdi.webdriver-binaries" version "3.2"
-    id "application"
 }
 
 version project.VERSION
-
-apply plugin: "groovy"
-apply plugin: "java"
-apply plugin: "eclipse"
-apply plugin: "idea"
-apply plugin: "jacoco"
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
-
-sourceCompatibility = 1.17
-targetCompatibility = 1.9
 
 ext {
     gebVersion = "7.0"
@@ -29,36 +14,29 @@ ext {
     jsoupVersion = "1.16.1"
 }
 
+ext.gradleProfile = file("gradle_profile")
+
+apply from: "${ext.gradleProfile}/libs.gradle"
+apply from: "${ext.gradleProfile}/java.gradle"
+
+
+
+
+
 dependencies {
-    implementation("org.apache.groovy:groovy-all:${groovyVersion}") {
-        exclude(group: "junit")
-    }
-    implementation "ru.yandex.qatools.ashot:ashot:1.5.4"
 
-    implementation "org.jsoup:jsoup:${jsoupVersion}"
 
-    implementation "org.gebish:geb-spock:${gebVersion}"
-    implementation "org.gebish:geb-core:${gebVersion}"
-    implementation "org.spockframework:spock-core:${spockVersion}-groovy-${groovyBaseVersion}"
-    implementation "org.seleniumhq.selenium:selenium-support:${seleniumVersion}"
-    implementation "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
-    implementation "org.seleniumhq.selenium:htmlunit-driver:2.49.1"
+    // screenshot library
+//    implementation "ru.yandex.qatools.ashot:ashot:1.5.4"
+    // google api
+//    implementation "com.google.api-client:google-api-client:1.31.4"
+    // csv parser
+//    implementation "com.xlson.groovycsv:groovycsv:1.3"
 
-    implementation "io.sgr:s2-geometry-library-java:1.0.1"
-    implementation "com.xlson.groovycsv:groovycsv:1.3"
-    implementation "com.google.maps:google-maps-services:0.18.0"
-    implementation "com.google.api-client:google-api-client:1.31.4"
-    implementation "com.dropbox.core:dropbox-core-sdk:4.0.0"
 
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
 }
 
-webdriverBinaries {
-    configureTask(run)
-    chromedriver "114.0.5735.90"
-    geckodriver "0.33.0"
-}
+
 
 //jacocoTestReport {
 //    reports {
@@ -72,10 +50,70 @@ webdriverBinaries {
 //    reportsDir = file("$buildDir/customJacocoReportDir")
 //}
 
-test {
-    useJUnitPlatform()
-    testLogging {
-        events "failed"
-        exceptionFormat "full"
+
+
+//allprojects {
+//    apply plugin: "groovy"
+//    apply plugin: "java"
+//}
+
+
+subprojects {
+    apply plugin: "eclipse"
+    apply plugin: "idea"
+    apply plugin: "java"
+    apply plugin: "groovy"
+    apply plugin: "jacoco"
+    apply plugin: "application"
+
+    webdriverBinaries {
+        configureTask(run)
+        chromedriver "114.0.5735.90"
+        geckodriver "0.33.0"
+        edgedriver "110.0.1587.57"
+    }
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation("org.apache.groovy:groovy-all:${groovyVersion}") {
+            exclude(group: "junit")
+        }
+
+        implementation "org.jsoup:jsoup:${jsoupVersion}"
+
+        implementation "org.gebish:geb-spock:${gebVersion}"
+        implementation "org.gebish:geb-core:${gebVersion}"
+        implementation "org.spockframework:spock-core:${spockVersion}-groovy-${groovyBaseVersion}"
+        implementation "org.seleniumhq.selenium:selenium-support:${seleniumVersion}"
+        implementation "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
+        implementation "org.seleniumhq.selenium:htmlunit3-driver:${seleniumVersion}"
+
+        implementation "io.sgr:s2-geometry-library-java:1.0.1"
+        implementation "com.google.maps:google-maps-services:2.2.0"
+        implementation "com.dropbox.core:dropbox-core-sdk:4.0.0"
+
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+        testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+        testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
+    }
+
+    test {
+        useJUnitPlatform()
+        testLogging {
+            events "failed"
+            exceptionFormat "full"
+        }
     }
 }
